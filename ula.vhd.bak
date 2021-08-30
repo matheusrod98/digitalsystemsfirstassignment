@@ -7,7 +7,7 @@ entity ula is
 	(
         V_SW:	in std_logic_vector (17 downto 0);  -- Input, first half for the A vector and second half for the B vector.
 		G_LEDG: out std_logic_vector (17 downto 0); -- Output, 8-bit vector.
-        V_BT:   in std_logic_vector  (2 downto 0)   -- Select operation, a number from 0000 to 0111.
+        V_BT:   in std_logic_vector  (3 downto 0)   -- Select operation, a number from 0000 to 0111.
     );
 
 end entity ula;				
@@ -15,7 +15,7 @@ end entity ula;
 architecture ula_test of ula is
 begin
     
-    process (V_SW, V_BT)
+    process (V_SW, G_LEDG, V_BT)
 
 	    variable carry: std_logic_vector (3 downto 0);
 	    variable c0:    std_logic_vector (3 downto 0);
@@ -37,7 +37,7 @@ begin
 	    case V_BT is
 
             -- Full adder.
-		    when "000" =>		
+		    when "0000" =>		
 			
 			    for i in 0 to 3 loop
                     if i = 0 then
@@ -57,7 +57,7 @@ begin
                 end loop;		
                 
             -- Full subtractor.
-			when "001" =>
+			when "0001" =>
 
 				for i in 0 to 3 loop							
                     if i = 0 then
@@ -77,31 +77,31 @@ begin
                 end loop;
 
             -- Bitwise and.
-			when "010" =>
+			when "0010" =>
 				for i in 0 to 3 loop				
 					G_LEDG (i) <= V_SW (i) and V_SW (i + 9);
 				end loop;
 
             -- Bitwise or.
-			when "011" =>
+			when "0011" =>
 				for i in 0 to 3 loop				
 					G_LEDG (i) <= V_SW (i) or V_SW (i + 9);
 				end loop;
 
             -- Bitwise xor.
-			when "100" =>
+			when "0100" =>
 				for i in 0 to 3 loop				
 					G_LEDG (i) <= V_SW (i) xor V_SW (i + 9);
 				end loop;
 
             -- Bitwise not, applies only to the a vector.
-			when "101" => 
+			when "0101" => 
 				for i in 0 to 3 loop				
 				    G_LEDG (i) <= not V_SW (i);
 				end loop;
 
             -- Multiplier.
-			when "110" =>
+			when "0110" =>
 
 				for j in 0 to 3 loop				
 					for i in 0 to 3 loop
@@ -114,7 +114,7 @@ begin
 								p3 (i) := V_SW (i) and V_SW (3 + 9);
 							
                             else
-								p0 (i) := V_SW (i + 1) and V_SW (0 + 9);														
+								p0 (i) := V_SW (i + 1) and b (0 + 9);														
 								p1 (i) := V_SW (i) and V_SW (1 + 9);
 								p2 (i) := V_SW (i) and V_SW (2 + 9);
 								p3 (i) := V_SW (i) and V_SW (3 + 9);
@@ -176,7 +176,7 @@ begin
 				G_LEDG (2) <= w1(0);
 
             -- One's increment. applies only to the the a vector.
-			when "111" =>
+			when "0111" =>
                 
                 for i in 0 to 3 loop							
 				    if i = 0 then
