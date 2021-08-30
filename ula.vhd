@@ -5,9 +5,9 @@ entity ula is
 
 	port
 	(
-        V_SW:	in std_logic_vector (17 downto 0);  -- Input, first half for the A vector and second half for the B vector.
-		G_LEDG: out std_logic_vector (17 downto 0); -- Output, 8-bit vector.
-        V_BT:   in std_logic_vector  (2 downto 0)   -- Select operation, a number from 0000 to 0111.
+        V_SW:	in std_logic_vector (7 downto 0);  -- Input, first half for the A vector and second half for the B vector.
+		G_LEDG: out std_logic_vector (7 downto 0); -- Output, 8-bit vector.
+        V_BT:   in std_logic_vector  (2 downto 0)  -- Select operation, a number from 0000 to 0111.
     );
 
 end entity ula;				
@@ -42,12 +42,12 @@ begin
 			    for i in 0 to 3 loop
                     if i = 0 then
                         cin (0) := V_SW (i) and not V_SW (i);
-						G_LEDG (i) <= V_SW (i) xor V_SW (i + 9) xor cin (0);
-						carry (i) := (V_SW (i) and V_SW (i + 9)) or (V_SW (i) and cin (0)) or (V_SW (i + 9) and cin (0));
+						G_LEDG (i) <= V_SW (i) xor V_SW (i + 4) xor cin (0);
+						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and cin (0)) or (V_SW (i + 4) and cin (0));
 
 					else 
-                        G_LEDG (i) <= V_SW (i) xor V_SW (i + 9) xor carry (i - 1);
-						carry (i) := (V_SW (i) and V_SW (i + 9)) or (V_SW (i) and carry (i - 1)) or (V_SW (i + 9) and carry (i - 1));
+                        G_LEDG (i) <= V_SW (i) xor V_SW (i + 4) xor carry (i - 1);
+						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
                             G_LEDG (i + 1) <= carry (i);
@@ -62,12 +62,12 @@ begin
 				for i in 0 to 3 loop							
                     if i = 0 then
                         cin (0) := V_SW (i) or not V_SW (i);
-                        G_LEDG (i) <= V_SW (i) xor not V_SW (i + 9) xor cin (0);
-                        carry (i) := (V_SW (i) and not V_SW (i + 9)) or (V_SW (i) and cin (0)) or (not V_SW (i + 9) and cin (0));
+                        G_LEDG (i) <= V_SW (i) xor not V_SW (i + 4) xor cin (0);
+                        carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and cin (0)) or (not V_SW (i + 4) and cin (0));
 
                     else 
-                        G_LEDG (i) <= V_SW (i) xor not V_SW (i + 9) xor carry (i - 1);
-                        carry (i) := (V_SW (i) and not V_SW (i + 9)) or (V_SW (i) and carry (i - 1)) or (not V_SW (i + 9) and carry (i - 1));
+                        G_LEDG (i) <= V_SW (i) xor not V_SW (i + 4) xor carry (i - 1);
+                        carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (not V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
                             G_LEDG (i + 1) <= not carry (i);
@@ -79,19 +79,19 @@ begin
             -- Bitwise and.
 			when "010" =>
 				for i in 0 to 3 loop				
-					G_LEDG (i) <= V_SW (i) and V_SW (i + 9);
+					G_LEDG (i) <= V_SW (i) and V_SW (i + 4);
 				end loop;
 
             -- Bitwise or.
 			when "011" =>
 				for i in 0 to 3 loop				
-					G_LEDG (i) <= V_SW (i) or V_SW (i + 9);
+					G_LEDG (i) <= V_SW (i) or V_SW (i + 4);
 				end loop;
 
             -- Bitwise xor.
 			when "100" =>
 				for i in 0 to 3 loop				
-					G_LEDG (i) <= V_SW (i) xor V_SW (i + 9);
+					G_LEDG (i) <= V_SW (i) xor V_SW (i + 4);
 				end loop;
 
             -- Bitwise not, applies only to the a vector.
@@ -108,16 +108,16 @@ begin
 
 						if j = 0 then
 							if i = 3 then
-								p0 (i) := V_SW (i + 9) and not V_SW (i + 9);
-								p1 (i) := V_SW (i) and V_SW (1 + 9);
-								p2 (i) := V_SW (i) and V_SW (2 + 9);
-								p3 (i) := V_SW (i) and V_SW (3 + 9);
+								p0 (i) := V_SW (i + 4) and not V_SW (i + 4);
+								p1 (i) := V_SW (i) and V_SW (1 + 4);
+								p2 (i) := V_SW (i) and V_SW (2 + 4);
+								p3 (i) := V_SW (i) and V_SW (3 + 4);
 							
                             else
-								p0 (i) := V_SW (i + 1) and V_SW (0 + 9);														
-								p1 (i) := V_SW (i) and V_SW (1 + 9);
-								p2 (i) := V_SW (i) and V_SW (2 + 9);
-								p3 (i) := V_SW (i) and V_SW (3 + 9);
+								p0 (i) := V_SW (i + 1) and V_SW (0 + 4);														
+								p1 (i) := V_SW (i) and V_SW (1 + 4);
+								p2 (i) := V_SW (i) and V_SW (2 + 4);
+								p3 (i) := V_SW (i) and V_SW (3 + 4);
 							end if;
 
 						elsif j = 1 then														
@@ -171,7 +171,7 @@ begin
 					G_LEDG (i) <= w2 (i - 3);													
 				end loop;
 
-				G_LEDG (0) <= V_SW (0) and V_SW (0 + 9);
+				G_LEDG (0) <= V_SW (0) and V_SW (0 + 4);
 				G_LEDG (1) <= w0 (0);
 				G_LEDG (2) <= w1(0);
 
