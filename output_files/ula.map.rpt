@@ -1,5 +1,5 @@
 Analysis & Synthesis report for ula
-Tue Aug 31 18:11:19 2021
+Tue Aug 31 20:43:06 2021
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -43,16 +43,16 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Tue Aug 31 18:11:19 2021       ;
+; Analysis & Synthesis Status        ; Successful - Tue Aug 31 20:43:06 2021       ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; ula                                         ;
 ; Top-level Entity Name              ; ula                                         ;
 ; Family                             ; Cyclone IV E                                ;
-; Total logic elements               ; 22                                          ;
-;     Total combinational functions  ; 22                                          ;
-;     Dedicated logic registers      ; 0                                           ;
-; Total registers                    ; 0                                           ;
-; Total pins                         ; 30                                          ;
+; Total logic elements               ; 78                                          ;
+;     Total combinational functions  ; 78                                          ;
+;     Dedicated logic registers      ; 29                                          ;
+; Total registers                    ; 29                                          ;
+; Total pins                         ; 31                                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
 ; Embedded Multiplier 9-bit elements ; 0                                           ;
@@ -154,10 +154,11 @@ https://fpgasoftware.intel.com/eula.
 ; Maximum allowed            ; 2           ;
 ;                            ;             ;
 ; Average used               ; 1.00        ;
-; Maximum used               ; 1           ;
+; Maximum used               ; 2           ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
+;     Processor 2            ;   0.0%      ;
 +----------------------------+-------------+
 
 
@@ -170,36 +171,36 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------+-----------------+-----------------+-------------------------------------------------------------------------+---------+
 
 
-+-------------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary                 ;
-+---------------------------------------------+---------------+
-; Resource                                    ; Usage         ;
-+---------------------------------------------+---------------+
-; Estimated Total logic elements              ; 22            ;
-;                                             ;               ;
-; Total combinational functions               ; 22            ;
-; Logic element usage by number of LUT inputs ;               ;
-;     -- 4 input functions                    ; 18            ;
-;     -- 3 input functions                    ; 2             ;
-;     -- <=2 input functions                  ; 2             ;
-;                                             ;               ;
-; Logic elements by mode                      ;               ;
-;     -- normal mode                          ; 22            ;
-;     -- arithmetic mode                      ; 0             ;
-;                                             ;               ;
-; Total registers                             ; 0             ;
-;     -- Dedicated logic registers            ; 0             ;
-;     -- I/O registers                        ; 0             ;
-;                                             ;               ;
-; I/O pins                                    ; 30            ;
-;                                             ;               ;
-; Embedded Multiplier 9-bit elements          ; 0             ;
-;                                             ;               ;
-; Maximum fan-out node                        ; V_SW[0]~input ;
-; Maximum fan-out                             ; 10            ;
-; Total fan-out                               ; 131           ;
-; Average fan-out                             ; 1.60          ;
-+---------------------------------------------+---------------+
++----------------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary                    ;
++---------------------------------------------+------------------+
+; Resource                                    ; Usage            ;
++---------------------------------------------+------------------+
+; Estimated Total logic elements              ; 78               ;
+;                                             ;                  ;
+; Total combinational functions               ; 78               ;
+; Logic element usage by number of LUT inputs ;                  ;
+;     -- 4 input functions                    ; 24               ;
+;     -- 3 input functions                    ; 9                ;
+;     -- <=2 input functions                  ; 45               ;
+;                                             ;                  ;
+; Logic elements by mode                      ;                  ;
+;     -- normal mode                          ; 53               ;
+;     -- arithmetic mode                      ; 25               ;
+;                                             ;                  ;
+; Total registers                             ; 29               ;
+;     -- Dedicated logic registers            ; 29               ;
+;     -- I/O registers                        ; 0                ;
+;                                             ;                  ;
+; I/O pins                                    ; 31               ;
+;                                             ;                  ;
+; Embedded Multiplier 9-bit elements          ; 0                ;
+;                                             ;                  ;
+; Maximum fan-out node                        ; G_CLOCK_50~input ;
+; Maximum fan-out                             ; 29               ;
+; Total fan-out                               ; 323              ;
+; Average fan-out                             ; 1.91             ;
++---------------------------------------------+------------------+
 
 
 +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -207,7 +208,7 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 ; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name ; Entity Name ; Library Name ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
-; |ula                       ; 22 (22)             ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 30   ; 0            ; |ula                ; ula         ; work         ;
+; |ula                       ; 78 (78)             ; 29 (29)                   ; 0           ; 0            ; 0       ; 0         ; 31   ; 0            ; |ula                ; ula         ; work         ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
@@ -217,7 +218,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 0     ;
+; Total registers                              ; 29    ;
 ; Number of registers using Synchronous Clear  ; 0     ;
 ; Number of registers using Synchronous Load   ; 0     ;
 ; Number of registers using Asynchronous Clear ; 0     ;
@@ -232,17 +233,20 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; boundary_port         ; 30                          ;
-; cycloneiii_lcell_comb ; 25                          ;
-;     normal            ; 25                          ;
-;         0 data inputs ; 1                           ;
-;         1 data inputs ; 2                           ;
-;         2 data inputs ; 2                           ;
-;         3 data inputs ; 2                           ;
-;         4 data inputs ; 18                          ;
+; boundary_port         ; 31                          ;
+; cycloneiii_ff         ; 29                          ;
+;     plain             ; 29                          ;
+; cycloneiii_lcell_comb ; 80                          ;
+;     arith             ; 25                          ;
+;         2 data inputs ; 25                          ;
+;     normal            ; 55                          ;
+;         1 data inputs ; 3                           ;
+;         2 data inputs ; 19                          ;
+;         3 data inputs ; 9                           ;
+;         4 data inputs ; 24                          ;
 ;                       ;                             ;
-; Max LUT depth         ; 3.00                        ;
-; Average LUT depth     ; 1.79                        ;
+; Max LUT depth         ; 8.10                        ;
+; Average LUT depth     ; 5.66                        ;
 +-----------------------+-----------------------------+
 
 
@@ -251,7 +255,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:00:00     ;
+; Top            ; 00:00:01     ;
 +----------------+--------------+
 
 
@@ -261,33 +265,33 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
-    Info: Processing started: Tue Aug 31 18:11:03 2021
+    Info: Processing started: Tue Aug 31 20:42:51 2021
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off ula -c ula
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file ula.vhd
-    Info (12022): Found design unit 1: ula-ula_test File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 16
+    Info (12022): Found design unit 1: ula-ula_test File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 17
     Info (12023): Found entity 1: ula File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 4
 Info (12127): Elaborating entity "ula" for the top level hierarchy
-Warning (10540): VHDL Signal Declaration warning at ula.vhd(19): used explicit default value for signal "control" because signal was never assigned a value File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 19
-Warning (10542): VHDL Variable Declaration warning at ula.vhd(96): used initial value expression for variable "u" because variable was never assigned a value File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 96
-Warning (10492): VHDL Process Statement warning at ula.vhd(99): signal "control" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 99
-Warning (10873): Using initial value X (don't care) for net "G_LEDG[7..5]" at ula.vhd(11) File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 11
-Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "G_LEDG[5]" is stuck at GND File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 11
-    Warning (13410): Pin "G_LEDG[6]" is stuck at GND File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 11
-    Warning (13410): Pin "G_LEDG[7]" is stuck at GND File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 11
+Warning (10540): VHDL Signal Declaration warning at ula.vhd(21): used explicit default value for signal "unit" because signal was never assigned a value File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 21
+Warning (10036): Verilog HDL or VHDL warning at ula.vhd(121): object "s" assigned a value but never read File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 121
+Warning (10542): VHDL Variable Declaration warning at ula.vhd(124): used initial value expression for variable "u" because variable was never assigned a value File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 124
+Warning (10492): VHDL Process Statement warning at ula.vhd(127): signal "control" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 127
+Warning (10631): VHDL Process Statement warning at ula.vhd(107): inferring latch(es) for signal or variable "carry", which holds its previous value in one or more paths through the process File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 107
+Warning (10631): VHDL Process Statement warning at ula.vhd(107): inferring latch(es) for signal or variable "c0", which holds its previous value in one or more paths through the process File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 107
+Warning (10631): VHDL Process Statement warning at ula.vhd(107): inferring latch(es) for signal or variable "c1", which holds its previous value in one or more paths through the process File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 107
+Warning (10631): VHDL Process Statement warning at ula.vhd(107): inferring latch(es) for signal or variable "c2", which holds its previous value in one or more paths through the process File: /home/matheus/Documents/Faculdade/Trabalhos/SD/first_experiment/ula.vhd Line: 107
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 52 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 8 input pins
+Info (21057): Implemented 117 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 9 input pins
     Info (21059): Implemented 22 output pins
-    Info (21061): Implemented 22 logic cells
+    Info (21061): Implemented 86 logic cells
 Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 9 warnings
-    Info: Peak virtual memory: 419 megabytes
-    Info: Processing ended: Tue Aug 31 18:11:19 2021
-    Info: Elapsed time: 00:00:16
-    Info: Total CPU time (on all processors): 00:00:30
+    Info: Peak virtual memory: 418 megabytes
+    Info: Processing ended: Tue Aug 31 20:43:06 2021
+    Info: Elapsed time: 00:00:15
+    Info: Total CPU time (on all processors): 00:00:29
 
 

@@ -5,10 +5,11 @@ entity ula is
 
 	port
 	(
-        V_SW:	in std_logic_vector (7 downto 0);   -- From 0 to 3 will be the A vector and from 4 to 7 will be the B vector.
-		G_HEX0: out std_logic_vector (6 downto 0);  -- Will show the A vector.
-        G_HEX1: out std_logic_vector (6 downto 0);  -- Will show the B vector.
-        G_LEDG: out std_logic_vector (7 downto 0)   -- Output. For now...
+        G_CLOCK_50: in std_logic;                       -- 50 MHz clock from the FPGA.
+        V_SW:	    in std_logic_vector (7 downto 0);   -- From 0 to 3: A vector and from 4 to 7: B vector.
+		G_HEX0:     out std_logic_vector (6 downto 0);  -- Show the A vector.
+        G_HEX1:     out std_logic_vector (6 downto 0);  -- Show the B vector.
+        G_LEDG:     out std_logic_vector (7 downto 0)   -- Show which operation is executing.
     );
 
 end entity ula;				
@@ -20,6 +21,32 @@ architecture ula_test of ula is
     signal unit:    std_logic_vector (2 downto 0) := "001"; 
     
 begin
+
+    -- Counter that drives the control sytem. Change the running operation each 1 sec.
+    process (G_CLOCK_50)
+        
+        variable secondsCounted: integer range 0 to 50000000 := 0;
+    
+        begin
+        
+            if rising_edge (G_CLOCK_50) then
+                secondsCounted := secondsCounted + 1;
+                
+                if (secondsCounted = 50000000 - 1) then
+                    secondsCounted := 0;
+                    
+                    if (control = "111") then
+                        control <= "000";
+                    
+                    else
+                        control (0) <= control (0) xor unit (0);
+                        control (1) <= control (1) xor (control (0) and unit (0));
+                        control (2) <= control (2) xor ((control (0) and unit (0)) and control (1));
+                    end if;
+               end if;
+            end if;
+                        
+        end process;
 
     -- Shows the inputs in the 7-seg displays.
     process (V_SW)
@@ -91,6 +118,7 @@ begin
 	    variable w0:    std_logic_vector (4 downto 0);
 	    variable w1:    std_logic_vector (4 downto 0);
 	    variable w2:    std_logic_vector (4 downto 0);
+        variable s:     std_logic_vector (7 downto 0);
 
         -- This one below it's only used for the one's increment.
         variable u:     std_logic_vector (3 downto 0) := "0001";
@@ -99,20 +127,21 @@ begin
 	    case control is
 
             -- Full adder.
-		    when "000" =>		
+		    when "000" =>
+                G_LEDG <= "00000001";
 			
 			    for i in 0 to 3 loop
                     if i = 0 then
                         cin (0) := V_SW (i) and not V_SW (i);
-						G_LEDG (i) <= V_SW (i) xor V_SW (i + 4) xor cin (0);
+						s (i) := V_SW (i) xor V_SW (i + 4) xor cin (0);
 						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and cin (0)) or (V_SW (i + 4) and cin (0));
 
 					else 
-                        G_LEDG (i) <= V_SW (i) xor V_SW (i + 4) xor carry (i - 1);
+                        s (i) := V_SW (i) xor V_SW (i + 4) xor carry (i - 1);
 						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
-                            G_LEDG (i + 1) <= carry (i);
+                            s (i + 1) := carry (i);
                         end if;
 
                     end if;
@@ -120,19 +149,20 @@ begin
                 
             -- Full subtractor.
 			when "001" =>
+                G_LEDG <= "00000010";
 
 				for i in 0 to 3 loop							
                     if i = 0 then
                         cin (0) := V_SW (i) or not V_SW (i);
-                        G_LEDG (i) <= V_SW (i) xor not V_SW (i + 4) xor cin (0);
+                        s (i) := V_SW (i) xor not V_SW (i + 4) xor cin (0);
                         carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and cin (0)) or (not V_SW (i + 4) and cin (0));
 
                     else 
-                        G_LEDG (i) <= V_SW (i) xor not V_SW (i + 4) xor carry (i - 1);
+                        s (i) := V_SW (i) xor not V_SW (i + 4) xor carry (i - 1);
                         carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (not V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
-                            G_LEDG (i + 1) <= not carry (i);
+                            s (i + 1) := not carry (i);
                         end if;
 
                     end if;
@@ -140,30 +170,35 @@ begin
             
             -- Bitwise and.
 			when "010" =>
+                G_LEDG <= "00000100";
 				for i in 0 to 3 loop				
-					G_LEDG (i) <= V_SW (i) and V_SW (i + 4);
+					s (i) := V_SW (i) and V_SW (i + 4);
 				end loop;
                 
             -- Bitwise or.
 			when "011" =>
+                G_LEDG <= "00001000";
 				for i in 0 to 3 loop				
-					G_LEDG (i) <= V_SW (i) or V_SW (i + 4);
+					s (i) := V_SW (i) or V_SW (i + 4);
 				end loop;
 
             -- Bitwise xor.
 			when "100" =>
+                G_LEDG <= "00010000";
 				for i in 0 to 3 loop				
-					G_LEDG (i) <= V_SW (i) xor V_SW (i + 4);
+					s (i) := V_SW (i) xor V_SW (i + 4);
 				end loop;
                 
             -- Bitwise not, applies only to the a vector.
 			when "101" => 
+                G_LEDG <= "00100000";
 				for i in 0 to 3 loop				
-				    G_LEDG (i) <= not V_SW (i);
+				    s (i) := not V_SW (i);
 				end loop;
 
             -- Multiplier.
 			when "110" =>
+                G_LEDG <= "01000000";
 
 				for j in 0 to 3 loop				
 					for i in 0 to 3 loop
@@ -230,28 +265,29 @@ begin
 				end loop;
                 
 				for i in  3 to 7 loop			
-					G_LEDG (i) <= w2 (i - 3);													
+					s (i) := w2 (i - 3);													
 				end loop;
 
-				G_LEDG (0) <= V_SW (0) and V_SW (0 + 4);
-				G_LEDG (1) <= w0 (0);
-				G_LEDG (2) <= w1(0);
+				s (0) := V_SW (0) and V_SW (0 + 4);
+				s (1) := w0 (0);
+                s (2) := w1(0);
 
             -- One's increment. applies only to the the a vector.
 			when "111" =>
+                G_LEDG <= "10000000";
                 
                 for i in 0 to 3 loop							
 				    if i = 0 then
 					    cin (0) := V_SW (i) and not V_SW (i);
-						G_LEDG (i) <= V_SW (i) xor u (i) xor cin (0);
+						s (i) := V_SW (i) xor u (i) xor cin (0);
 						carry (i) := (V_SW (i) and u (i)) or (V_SW (i) and cin (0)) or (u (i) and cin (0));
 
 					else 
-					    G_LEDG (i) <= V_SW (i) xor u (i) xor carry (i - 1);
+					    s (i) := V_SW (i) xor u (i) xor carry (i - 1);
 						carry (i) := (V_SW (i) and u (i)) or (V_SW (i) and carry (i - 1)) or (u (i) and carry (i - 1));
 
                         if i = 3 then
-                            G_LEDG (i + 1) <= carry (i);
+                            s (i + 1) := carry (i);
                         end if;
 
                     end if;

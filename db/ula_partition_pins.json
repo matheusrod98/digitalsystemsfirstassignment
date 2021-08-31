@@ -80,6 +80,18 @@
 					"strict" : false
 				},
 				{
+					"name" : "G_LEDG[5]",
+					"strict" : false
+				},
+				{
+					"name" : "G_LEDG[6]",
+					"strict" : false
+				},
+				{
+					"name" : "G_LEDG[7]",
+					"strict" : false
+				},
+				{
 					"name" : "V_SW[0]",
 					"strict" : false
 				},
@@ -109,6 +121,10 @@
 				},
 				{
 					"name" : "V_SW[7]",
+					"strict" : false
+				},
+				{
+					"name" : "G_CLOCK_50",
 					"strict" : false
 				}
 			]
