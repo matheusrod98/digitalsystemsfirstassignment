@@ -5,17 +5,79 @@ entity ula is
 
 	port
 	(
-        V_SW:	in std_logic_vector (7 downto 0);  -- Input, first half for the A vector and second half for the B vector.
-		G_LEDG: out std_logic_vector (7 downto 0); -- Output, 8-bit vector.
-        V_BT:   in std_logic_vector  (2 downto 0)  -- Select operation, a number from 0000 to 0111.
+        V_SW:	in std_logic_vector (7 downto 0);   -- From 0 to 3 will be the A vector and from 4 to 7 will be the B vector.
+		G_HEX0: out std_logic_vector (6 downto 0);  -- Will show the A vector.
+        G_HEX1: out std_logic_vector (6 downto 0);  -- Will show the B vector.
+        G_LEDG: out std_logic_vector (7 downto 0)   -- Output. For now...
     );
 
 end entity ula;				
 		
 architecture ula_test of ula is
-begin
+
+    -- These will be used to change the current operation.
+    signal control: std_logic_vector (2 downto 0) := "000";
+    signal unit:    std_logic_vector (2 downto 0) := "001"; 
     
-    process (V_SW, V_BT)
+begin
+
+    -- Shows the inputs in the 7-seg displays.
+    process (V_SW)
+    
+        variable a: std_logic_vector (3 downto 0);
+        variable b: std_logic_vector (3 downto 0);
+            
+        begin
+            -- Splits the input in two parts.
+            for i in 0 to 3 loop
+                a (i) := V_SW (i);
+            end loop;
+            
+            for j in 4 to 7 loop
+                b (j - 4) := V_SW (j);
+            end loop;
+            
+            -- Tables to show the inputs in the 7-seg displays.
+            case a is
+                when "0000" => G_HEX0 <= "1000000";
+                when "0001" => G_HEX0 <= "1111001";
+                when "0010" => G_HEX0 <= "0100100";
+                when "0011" => G_HEX0 <= "0110000";
+                when "0100" => G_HEX0 <= "0011001";
+                when "0101" => G_HEX0 <= "0010010";
+                when "0110" => G_HEX0 <= "0000010";
+                when "0111" => G_HEX0 <= "1011000";
+                when "1000" => G_HEX0 <= "0000000";
+                when "1001" => G_HEX0 <= "0010000";
+                when "1010" => G_HEX0 <= "0001000";
+                when "1011" => G_HEX0 <= "0000011";
+                when "1100" => G_HEX0 <= "1000110";
+                when "1101" => G_HEX0 <= "0100001";
+                when "1110" => G_HEX0 <= "0000110";
+                when others => G_HEX0 <= "0001110";
+            end case;
+            
+            case b is
+                when "0000" => G_HEX1 <= "1000000";
+                when "0001" => G_HEX1 <= "1111001";
+                when "0010" => G_HEX1 <= "0100100";
+                when "0011" => G_HEX1 <= "0110000";
+                when "0100" => G_HEX1 <= "0011001";
+                when "0101" => G_HEX1 <= "0010010";
+                when "0110" => G_HEX1 <= "0000010";
+                when "0111" => G_HEX1 <= "1011000";
+                when "1000" => G_HEX1 <= "0000000";
+                when "1001" => G_HEX1 <= "0010000";
+                when "1010" => G_HEX1 <= "0001000";
+                when "1011" => G_HEX1 <= "0000011";
+                when "1100" => G_HEX1 <= "1000110";
+                when "1101" => G_HEX1 <= "0100001";
+                when "1110" => G_HEX1 <= "0000110";
+                when others => G_HEX1 <= "0001110";
+            end case;
+        end process;
+ 
+    process (V_SW)
 
 	    variable carry: std_logic_vector (3 downto 0);
 	    variable c0:    std_logic_vector (3 downto 0);
@@ -34,7 +96,7 @@ begin
         variable u:     std_logic_vector (3 downto 0) := "0001";
 	
     begin
-	    case V_BT is
+	    case control is
 
             -- Full adder.
 		    when "000" =>		
@@ -54,7 +116,7 @@ begin
                         end if;
 
                     end if;
-                end loop;		
+                end loop;
                 
             -- Full subtractor.
 			when "001" =>
@@ -75,13 +137,13 @@ begin
 
                     end if;
                 end loop;
-
+            
             -- Bitwise and.
 			when "010" =>
 				for i in 0 to 3 loop				
 					G_LEDG (i) <= V_SW (i) and V_SW (i + 4);
 				end loop;
-
+                
             -- Bitwise or.
 			when "011" =>
 				for i in 0 to 3 loop				
@@ -93,7 +155,7 @@ begin
 				for i in 0 to 3 loop				
 					G_LEDG (i) <= V_SW (i) xor V_SW (i + 4);
 				end loop;
-
+                
             -- Bitwise not, applies only to the a vector.
 			when "101" => 
 				for i in 0 to 3 loop				
