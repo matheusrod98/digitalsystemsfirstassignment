@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
 
 entity ula is
 
@@ -9,6 +10,9 @@ entity ula is
         V_SW:	    in std_logic_vector (7 downto 0);   -- From 0 to 3: A vector and from 4 to 7: B vector.
 		G_HEX0:     out std_logic_vector (6 downto 0);  -- Show the A vector.
         G_HEX1:     out std_logic_vector (6 downto 0);  -- Show the B vector.
+        G_HEX4:     out std_logic_vector (6 downto 0);  -- Show the units of the output.
+        G_HEX5:     out std_logic_vector (6 downto 0);  -- Show the tens of the output.
+        G_HEX6:     out std_logic_vector (6 downto 0);  -- Show the hundreds of the output.
         G_LEDG:     out std_logic_vector (7 downto 0)   -- Show which operation is executing.
     );
 
@@ -20,7 +24,104 @@ architecture ula_test of ula is
     signal control: std_logic_vector (2 downto 0) := "000";
     signal unit:    std_logic_vector (2 downto 0) := "001"; 
     
+    -- This will be used to show the results.
+    signal s:       std_logic_vector (7 downto 0); -- b
+    signal result:  std_logic_vector (9 downto 0); -- p
+    
 begin
+
+    -- Process that will show the result of the operations in the 7-seg display.
+    process (s)
+    
+        variable temp:  std_logic_vector (17 downto 0); --z
+        variable u:     std_logic_vector (3 downto 0) := "0000"; -- Units.
+        variable t:     std_logic_vector (3 downto 0) := "0000"; -- Tens.   
+        variable h:     std_logic_vector (3 downto 0) := "0000"; -- Hundreds.
+
+        begin
+            
+            for i in 0 to 17 loop
+                temp (i) := '0';
+            end loop;
+            
+            temp (10 downto 3) := s;
+            
+            for i in 0 to 4 loop
+                if temp (11 downto 8) > 4 then
+                    temp (11 downto 8) := temp (11 downto 8) + 3;
+                end if;
+                
+                if temp (15 downto 12) > 4 then
+                    temp (15 downto 12) := temp (15 downto 12) + 3;
+                end if;
+                
+                temp (17 downto 1) := temp (16 downto 0);
+            end loop;
+             
+            result <= temp (17 downto 8);
+            
+            h (1 downto 0) := result (9 downto 8);
+            t := result (7 downto 4);
+            u := result (3 downto 0);
+            
+            -- Tables to convert units, tens and hundres to 7-seg.
+            case h is
+                when "0000" => G_HEX6 <= "1000000";
+                when "0001" => G_HEX6 <= "1111001";
+                when "0010" => G_HEX6 <= "0100100";
+                when "0011" => G_HEX6 <= "0110000";
+                when "0100" => G_HEX6 <= "0011001";
+                when "0101" => G_HEX6 <= "0010010";
+                when "0110" => G_HEX6 <= "0000010";
+                when "0111" => G_HEX6 <= "1011000";
+                when "1000" => G_HEX6 <= "0000000";
+                when "1001" => G_HEX6 <= "0010000";
+                when "1010" => G_HEX6 <= "0001000";
+                when "1011" => G_HEX6 <= "0000011";
+                when "1100" => G_HEX6 <= "1000110";
+                when "1101" => G_HEX6 <= "0100001";
+                when "1110" => G_HEX6 <= "0000110";
+                when others => G_HEX6 <= "0001110";
+            end case;
+            
+            case t is
+                when "0000" => G_HEX5 <= "1000000";
+                when "0001" => G_HEX5 <= "1111001";
+                when "0010" => G_HEX5 <= "0100100";
+                when "0011" => G_HEX5 <= "0110000";
+                when "0100" => G_HEX5 <= "0011001";
+                when "0101" => G_HEX5 <= "0010010";
+                when "0110" => G_HEX5 <= "0000010";
+                when "0111" => G_HEX5 <= "1011000";
+                when "1000" => G_HEX5 <= "0000000";
+                when "1001" => G_HEX5 <= "0010000";
+                when "1010" => G_HEX5 <= "0001000";
+                when "1011" => G_HEX5 <= "0000011";
+                when "1100" => G_HEX5 <= "1000110";
+                when "1101" => G_HEX5 <= "0100001";
+                when "1110" => G_HEX5 <= "0000110";
+                when others => G_HEX5 <= "0001110";
+            end case;
+            
+            case u is
+                when "0000" => G_HEX4 <= "1000000";
+                when "0001" => G_HEX4 <= "1111001";
+                when "0010" => G_HEX4 <= "0100100";
+                when "0011" => G_HEX4 <= "0110000";
+                when "0100" => G_HEX4 <= "0011001";
+                when "0101" => G_HEX4 <= "0010010";
+                when "0110" => G_HEX4 <= "0000010";
+                when "0111" => G_HEX4 <= "1011000";
+                when "1000" => G_HEX4 <= "0000000";
+                when "1001" => G_HEX4 <= "0010000";
+                when "1010" => G_HEX4 <= "0001000";
+                when "1011" => G_HEX4 <= "0000011";
+                when "1100" => G_HEX4 <= "1000110";
+                when "1101" => G_HEX4 <= "0100001";
+                when "1110" => G_HEX4 <= "0000110";
+                when others => G_HEX4 <= "0001110";
+            end case;
+    end process;
 
     -- Counter that drives the control sytem. Change the running operation each 1 sec.
     process (G_CLOCK_50)
@@ -118,7 +219,6 @@ begin
 	    variable w0:    std_logic_vector (4 downto 0);
 	    variable w1:    std_logic_vector (4 downto 0);
 	    variable w2:    std_logic_vector (4 downto 0);
-        variable s:     std_logic_vector (7 downto 0);
 
         -- This one below it's only used for the one's increment.
         variable u:     std_logic_vector (3 downto 0) := "0001";
@@ -133,15 +233,15 @@ begin
 			    for i in 0 to 3 loop
                     if i = 0 then
                         cin (0) := V_SW (i) and not V_SW (i);
-						s (i) := V_SW (i) xor V_SW (i + 4) xor cin (0);
+						s (i) <= V_SW (i) xor V_SW (i + 4) xor cin (0);
 						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and cin (0)) or (V_SW (i + 4) and cin (0));
 
 					else 
-                        s (i) := V_SW (i) xor V_SW (i + 4) xor carry (i - 1);
+                        s (i) <= V_SW (i) xor V_SW (i + 4) xor carry (i - 1);
 						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
-                            s (i + 1) := carry (i);
+                            s (i + 1) <= carry (i);
                         end if;
 
                     end if;
@@ -154,15 +254,15 @@ begin
 				for i in 0 to 3 loop							
                     if i = 0 then
                         cin (0) := V_SW (i) or not V_SW (i);
-                        s (i) := V_SW (i) xor not V_SW (i + 4) xor cin (0);
+                        s (i) <= V_SW (i) xor not V_SW (i + 4) xor cin (0);
                         carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and cin (0)) or (not V_SW (i + 4) and cin (0));
 
                     else 
-                        s (i) := V_SW (i) xor not V_SW (i + 4) xor carry (i - 1);
+                        s (i) <= V_SW (i) xor not V_SW (i + 4) xor carry (i - 1);
                         carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (not V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
-                            s (i + 1) := not carry (i);
+                            s (i + 1) <= not carry (i);
                         end if;
 
                     end if;
@@ -172,28 +272,28 @@ begin
 			when "010" =>
                 G_LEDG <= "00000100";
 				for i in 0 to 3 loop				
-					s (i) := V_SW (i) and V_SW (i + 4);
+					s (i) <= V_SW (i) and V_SW (i + 4);
 				end loop;
                 
             -- Bitwise or.
 			when "011" =>
                 G_LEDG <= "00001000";
 				for i in 0 to 3 loop				
-					s (i) := V_SW (i) or V_SW (i + 4);
+					s (i) <= V_SW (i) or V_SW (i + 4);
 				end loop;
 
             -- Bitwise xor.
 			when "100" =>
                 G_LEDG <= "00010000";
 				for i in 0 to 3 loop				
-					s (i) := V_SW (i) xor V_SW (i + 4);
+					s (i) <= V_SW (i) xor V_SW (i + 4);
 				end loop;
                 
             -- Bitwise not, applies only to the a vector.
 			when "101" => 
                 G_LEDG <= "00100000";
 				for i in 0 to 3 loop				
-				    s (i) := not V_SW (i);
+				    s (i) <= not V_SW (i);
 				end loop;
 
             -- Multiplier.
@@ -265,12 +365,12 @@ begin
 				end loop;
                 
 				for i in  3 to 7 loop			
-					s (i) := w2 (i - 3);													
+					s (i) <= w2 (i - 3);													
 				end loop;
 
-				s (0) := V_SW (0) and V_SW (0 + 4);
-				s (1) := w0 (0);
-                s (2) := w1(0);
+				s (0) <= V_SW (0) and V_SW (0 + 4);
+				s (1) <= w0 (0);
+                s (2) <= w1(0);
 
             -- One's increment. applies only to the the a vector.
 			when "111" =>
@@ -279,15 +379,15 @@ begin
                 for i in 0 to 3 loop							
 				    if i = 0 then
 					    cin (0) := V_SW (i) and not V_SW (i);
-						s (i) := V_SW (i) xor u (i) xor cin (0);
+						s (i) <= V_SW (i) xor u (i) xor cin (0);
 						carry (i) := (V_SW (i) and u (i)) or (V_SW (i) and cin (0)) or (u (i) and cin (0));
 
 					else 
-					    s (i) := V_SW (i) xor u (i) xor carry (i - 1);
+					    s (i) <= V_SW (i) xor u (i) xor carry (i - 1);
 						carry (i) := (V_SW (i) and u (i)) or (V_SW (i) and carry (i - 1)) or (u (i) and carry (i - 1));
 
                         if i = 3 then
-                            s (i + 1) := carry (i);
+                            s (i + 1) <= carry (i);
                         end if;
 
                     end if;

@@ -3,39 +3,87 @@ Timing Analyzer Summary
 ------------------------------------------------------------
 
 Type  : Slow 1200mV 85C Model Setup 'G_CLOCK_50'
-Slack : -4.118
-TNS   : -92.666
+Slack : -5.051
+TNS   : -95.577
+
+Type  : Slow 1200mV 85C Model Setup 'control[1]'
+Slack : -1.797
+TNS   : -1.797
+
+Type  : Slow 1200mV 85C Model Hold 'control[1]'
+Slack : 0.023
+TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Hold 'G_CLOCK_50'
-Slack : 0.343
+Slack : 0.382
 TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Minimum Pulse Width 'G_CLOCK_50'
 Slack : -3.000
 TNS   : -32.000
 
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'control[1]'
+Slack : 0.395
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'control[0]'
+Slack : 0.404
+TNS   : 0.000
+
 Type  : Slow 1200mV 0C Model Setup 'G_CLOCK_50'
-Slack : -3.556
-TNS   : -79.259
+Slack : -4.427
+TNS   : -81.864
+
+Type  : Slow 1200mV 0C Model Setup 'control[1]'
+Slack : -1.540
+TNS   : -1.540
+
+Type  : Slow 1200mV 0C Model Hold 'control[1]'
+Slack : 0.014
+TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Hold 'G_CLOCK_50'
-Slack : 0.297
+Slack : 0.333
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Minimum Pulse Width 'G_CLOCK_50'
 Slack : -3.000
 TNS   : -32.000
 
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'control[0]'
+Slack : 0.375
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'control[1]'
+Slack : 0.441
+TNS   : 0.000
+
 Type  : Fast 1200mV 0C Model Setup 'G_CLOCK_50'
-Slack : -1.913
-TNS   : -40.353
+Slack : -2.388
+TNS   : -41.047
+
+Type  : Fast 1200mV 0C Model Setup 'control[1]'
+Slack : -0.827
+TNS   : -0.827
+
+Type  : Fast 1200mV 0C Model Hold 'control[1]'
+Slack : 0.021
+TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Hold 'G_CLOCK_50'
-Slack : 0.179
+Slack : 0.201
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'G_CLOCK_50'
 Slack : -3.000
-TNS   : -34.284
+TNS   : -33.823
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'control[1]'
+Slack : 0.378
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'control[0]'
+Slack : 0.436
+TNS   : 0.000
 
 ------------------------------------------------------------
