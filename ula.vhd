@@ -10,10 +10,11 @@ entity ula is
         V_SW:	    in std_logic_vector (7 downto 0);   -- From 0 to 3: A vector and from 4 to 7: B vector.
 		G_HEX0:     out std_logic_vector (6 downto 0);  -- Show the A vector.
         G_HEX1:     out std_logic_vector (6 downto 0);  -- Show the B vector.
-        G_HEX4:     out std_logic_vector (6 downto 0);  -- Show the units of the output.
-        G_HEX5:     out std_logic_vector (6 downto 0);  -- Show the tens of the output.
+        G_HEX2:     out std_logic_vector (6 downto 0);  -- Show the units of the output.
+        G_HEX4:     out std_logic_vector (6 downto 0);  -- Show the tens of the output.
         G_HEX6:     out std_logic_vector (6 downto 0);  -- Show the hundreds of the output.
-        G_LEDG:     out std_logic_vector (7 downto 0)   -- Show which operation is executing.
+        G_LEDG:     out std_logic_vector (7 downto 0);  -- Show which operation is executing.
+        V_BT:       in std_logic_vector (3 downto 0)    -- Control the initialization of the counter.
     );
 
 end entity ula;				
@@ -25,15 +26,36 @@ architecture ula_test of ula is
     signal unit:    std_logic_vector (2 downto 0) := "001"; 
     
     -- This will be used to show the results.
-    signal s:       std_logic_vector (7 downto 0); -- b
-    signal result:  std_logic_vector (9 downto 0); -- p
+    signal s:       std_logic_vector (7 downto 0);
+    signal result:  std_logic_vector (9 downto 0);
+    
+    -- 1 to start the counter and show the output and 0 to stop the counter and don't show the output.
+    signal start:   std_logic := '0';
     
 begin
+    
+    -- This will start the controller of the operations and light the 7-seg output display.
+    process (V_BT, G_CLOCK_50)
+        
+        variable delay: std_logic_vector (2 downto 0) := "111";
+            begin
+                -- I don't know why
+                if rising_edge (G_CLOCK_50) then
+                    delay (0) := V_BT (0);
+                    delay (1) := delay (0);
+                    delay (2) := delay (1);
+                    
+                    if delay = "000" then
+                        start <= '1';
+                        delay := "111";
+                    end if;
+                end if;
+        end process;
 
     -- Process that will show the result of the operations in the 7-seg display.
     process (s)
     
-        variable temp:  std_logic_vector (17 downto 0); --z
+        variable temp:  std_logic_vector (17 downto 0);
         variable u:     std_logic_vector (3 downto 0) := "0000"; -- Units.
         variable t:     std_logic_vector (3 downto 0) := "0000"; -- Tens.   
         variable h:     std_logic_vector (3 downto 0) := "0000"; -- Hundreds.
@@ -45,6 +67,7 @@ begin
             end loop;
             
             temp (10 downto 3) := s;
+            s <= "00000000";
             
             for i in 0 to 4 loop
                 if temp (11 downto 8) > 4 then
@@ -64,62 +87,62 @@ begin
             t := result (7 downto 4);
             u := result (3 downto 0);
             
-            -- Tables to convert units, tens and hundres to 7-seg.
+            -- Tables to convert units, tens and hundreds to 7-seg.
             case h is
-                when "0000" => G_HEX6 <= "1000000";
-                when "0001" => G_HEX6 <= "1111001";
-                when "0010" => G_HEX6 <= "0100100";
-                when "0011" => G_HEX6 <= "0110000";
-                when "0100" => G_HEX6 <= "0011001";
-                when "0101" => G_HEX6 <= "0010010";
-                when "0110" => G_HEX6 <= "0000010";
-                when "0111" => G_HEX6 <= "1011000";
-                when "1000" => G_HEX6 <= "0000000";
-                when "1001" => G_HEX6 <= "0010000";
-                when "1010" => G_HEX6 <= "0001000";
-                when "1011" => G_HEX6 <= "0000011";
-                when "1100" => G_HEX6 <= "1000110";
-                when "1101" => G_HEX6 <= "0100001";
-                when "1110" => G_HEX6 <= "0000110";
-                when others => G_HEX6 <= "0001110";
+                when "0000" => G_HEX2 <= "1000000";
+                when "0001" => G_HEX2 <= "1111001";
+                when "0010" => G_HEX2 <= "0100100";
+                when "0011" => G_HEX2 <= "0110000";
+                when "0100" => G_HEX2 <= "0011001";
+                when "0101" => G_HEX2 <= "0010010";
+                when "0110" => G_HEX2 <= "0000010";
+                when "0111" => G_HEX2 <= "1011000";
+                when "1000" => G_HEX2 <= "0000000";
+                when "1001" => G_HEX2 <= "0010000";
+                when "1010" => G_HEX2 <= "0001000";
+                when "1011" => G_HEX2 <= "0000011";
+                when "1100" => G_HEX2 <= "1000110";
+                when "1101" => G_HEX2 <= "0100001";
+                when "1110" => G_HEX2 <= "0000110";
+                when others => G_HEX2 <= "0001110";
             end case;
             
             case t is
-                when "0000" => G_HEX5 <= "1000000";
-                when "0001" => G_HEX5 <= "1111001";
-                when "0010" => G_HEX5 <= "0100100";
-                when "0011" => G_HEX5 <= "0110000";
-                when "0100" => G_HEX5 <= "0011001";
-                when "0101" => G_HEX5 <= "0010010";
-                when "0110" => G_HEX5 <= "0000010";
-                when "0111" => G_HEX5 <= "1011000";
-                when "1000" => G_HEX5 <= "0000000";
-                when "1001" => G_HEX5 <= "0010000";
-                when "1010" => G_HEX5 <= "0001000";
-                when "1011" => G_HEX5 <= "0000011";
-                when "1100" => G_HEX5 <= "1000110";
-                when "1101" => G_HEX5 <= "0100001";
-                when "1110" => G_HEX5 <= "0000110";
-                when others => G_HEX5 <= "0001110";
+                when "0000" => G_HEX1 <= "1000000";
+                when "0001" => G_HEX1 <= "1111001";
+                when "0010" => G_HEX1 <= "0100100";
+                when "0011" => G_HEX1 <= "0110000";
+                when "0100" => G_HEX1 <= "0011001";
+                when "0101" => G_HEX1 <= "0010010";
+                when "0110" => G_HEX1 <= "0000010";
+                when "0111" => G_HEX1 <= "1011000";
+                when "1000" => G_HEX1 <= "0000000";
+                when "1001" => G_HEX1 <= "0010000";
+                when "1010" => G_HEX1 <= "0001000";
+                when "1011" => G_HEX1 <= "0000011";
+                when "1100" => G_HEX1 <= "1000110";
+                when "1101" => G_HEX1 <= "0100001";
+                when "1110" => G_HEX1 <= "0000110";
+                when others => G_HEX1 <= "0001110";
             end case;
             
             case u is
-                when "0000" => G_HEX4 <= "1000000";
-                when "0001" => G_HEX4 <= "1111001";
-                when "0010" => G_HEX4 <= "0100100";
-                when "0011" => G_HEX4 <= "0110000";
-                when "0100" => G_HEX4 <= "0011001";
-                when "0101" => G_HEX4 <= "0010010";
-                when "0110" => G_HEX4 <= "0000010";
-                when "0111" => G_HEX4 <= "1011000";
-                when "1000" => G_HEX4 <= "0000000";
-                when "1001" => G_HEX4 <= "0010000";
-                when "1010" => G_HEX4 <= "0001000";
-                when "1011" => G_HEX4 <= "0000011";
-                when "1100" => G_HEX4 <= "1000110";
-                when "1101" => G_HEX4 <= "0100001";
-                when "1110" => G_HEX4 <= "0000110";
-                when others => G_HEX4 <= "0001110";
+                when "0000" => G_HEX0 <= "1000000";
+                when "0001" => G_HEX0 <= "1111001";
+                when "0010" => G_HEX0 <= "0100100";
+                when "0011" => G_HEX0 <= "0110000";
+                when "0100" => G_HEX0 <= "0011001";
+                when "0101" => G_HEX0 <= "0010010";
+                when "0110" => G_HEX0 <= "0000010";
+                when "0111" => G_HEX0 <= "1011000";
+                when "1000" => G_HEX0 <= "0000000";
+                when "1001" => G_HEX0 <= "0010000";
+                when "1010" => G_HEX0 <= "0001000";
+                when "1011" => G_HEX0 <= "0000011";
+                when "1100" => G_HEX0 <= "1000110";
+                when "1101" => G_HEX0 <= "0100001";
+                when "1110" => G_HEX0 <= "0000110";
+                when others => G_HEX0 <= "0001110";
             end case;
     end process;
 
@@ -129,9 +152,11 @@ begin
         variable secondsCounted: integer range 0 to 50000000 := 0;
     
         begin
-        
+            
             if rising_edge (G_CLOCK_50) then
-                secondsCounted := secondsCounted + 1;
+                if start = '1' then
+                    secondsCounted := secondsCounted + 1;
+                end if;
                 
                 if (secondsCounted = 50000000 - 1) then
                     secondsCounted := 0;
@@ -166,42 +191,42 @@ begin
             end loop;
             
             -- Tables to show the inputs in the 7-seg displays.
-            case a is
-                when "0000" => G_HEX0 <= "1000000";
-                when "0001" => G_HEX0 <= "1111001";
-                when "0010" => G_HEX0 <= "0100100";
-                when "0011" => G_HEX0 <= "0110000";
-                when "0100" => G_HEX0 <= "0011001";
-                when "0101" => G_HEX0 <= "0010010";
-                when "0110" => G_HEX0 <= "0000010";
-                when "0111" => G_HEX0 <= "1011000";
-                when "1000" => G_HEX0 <= "0000000";
-                when "1001" => G_HEX0 <= "0010000";
-                when "1010" => G_HEX0 <= "0001000";
-                when "1011" => G_HEX0 <= "0000011";
-                when "1100" => G_HEX0 <= "1000110";
-                when "1101" => G_HEX0 <= "0100001";
-                when "1110" => G_HEX0 <= "0000110";
-                when others => G_HEX0 <= "0001110";
+            case b is
+                when "0000" => G_HEX4 <= "1000000";
+                when "0001" => G_HEX4 <= "1111001";
+                when "0010" => G_HEX4 <= "0100100";
+                when "0011" => G_HEX4 <= "0110000";
+                when "0100" => G_HEX4 <= "0011001";
+                when "0101" => G_HEX4 <= "0010010";
+                when "0110" => G_HEX4 <= "0000010";
+                when "0111" => G_HEX4 <= "1011000";
+                when "1000" => G_HEX4 <= "0000000";
+                when "1001" => G_HEX4 <= "0010000";
+                when "1010" => G_HEX4 <= "0001000";
+                when "1011" => G_HEX4 <= "0000011";
+                when "1100" => G_HEX4 <= "1000110";
+                when "1101" => G_HEX4 <= "0100001";
+                when "1110" => G_HEX4 <= "0000110";
+                when others => G_HEX4 <= "0001110";
             end case;
             
-            case b is
-                when "0000" => G_HEX1 <= "1000000";
-                when "0001" => G_HEX1 <= "1111001";
-                when "0010" => G_HEX1 <= "0100100";
-                when "0011" => G_HEX1 <= "0110000";
-                when "0100" => G_HEX1 <= "0011001";
-                when "0101" => G_HEX1 <= "0010010";
-                when "0110" => G_HEX1 <= "0000010";
-                when "0111" => G_HEX1 <= "1011000";
-                when "1000" => G_HEX1 <= "0000000";
-                when "1001" => G_HEX1 <= "0010000";
-                when "1010" => G_HEX1 <= "0001000";
-                when "1011" => G_HEX1 <= "0000011";
-                when "1100" => G_HEX1 <= "1000110";
-                when "1101" => G_HEX1 <= "0100001";
-                when "1110" => G_HEX1 <= "0000110";
-                when others => G_HEX1 <= "0001110";
+            case a is
+                when "0000" => G_HEX6 <= "1000000";
+                when "0001" => G_HEX6 <= "1111001";
+                when "0010" => G_HEX6 <= "0100100";
+                when "0011" => G_HEX6 <= "0110000";
+                when "0100" => G_HEX6 <= "0011001";
+                when "0101" => G_HEX6 <= "0010010";
+                when "0110" => G_HEX6 <= "0000010";
+                when "0111" => G_HEX6 <= "1011000";
+                when "1000" => G_HEX6 <= "0000000";
+                when "1001" => G_HEX6 <= "0010000";
+                when "1010" => G_HEX6 <= "0001000";
+                when "1011" => G_HEX6 <= "0000011";
+                when "1100" => G_HEX6 <= "1000110";
+                when "1101" => G_HEX6 <= "0100001";
+                when "1110" => G_HEX6 <= "0000110";
+                when others => G_HEX6 <= "0001110";
             end case;
         end process;
  

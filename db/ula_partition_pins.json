@@ -60,6 +60,30 @@
 					"strict" : false
 				},
 				{
+					"name" : "G_HEX2[0]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX2[2]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX2[3]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX2[4]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX2[5]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX2[6]",
+					"strict" : false
+				},
+				{
 					"name" : "G_HEX4[0]",
 					"strict" : false
 				},
@@ -88,35 +112,11 @@
 					"strict" : false
 				},
 				{
-					"name" : "G_HEX5[0]",
-					"strict" : false
-				},
-				{
-					"name" : "G_HEX5[1]",
-					"strict" : false
-				},
-				{
-					"name" : "G_HEX5[2]",
-					"strict" : false
-				},
-				{
-					"name" : "G_HEX5[3]",
-					"strict" : false
-				},
-				{
-					"name" : "G_HEX5[4]",
-					"strict" : false
-				},
-				{
-					"name" : "G_HEX5[5]",
-					"strict" : false
-				},
-				{
-					"name" : "G_HEX5[6]",
-					"strict" : false
-				},
-				{
 					"name" : "G_HEX6[0]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX6[1]",
 					"strict" : false
 				},
 				{
@@ -172,6 +172,10 @@
 					"strict" : false
 				},
 				{
+					"name" : "V_SW[4]",
+					"strict" : false
+				},
+				{
 					"name" : "V_SW[0]",
 					"strict" : false
 				},
@@ -184,11 +188,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "V_SW[3]",
-					"strict" : false
-				},
-				{
-					"name" : "V_SW[4]",
+					"name" : "V_SW[6]",
 					"strict" : false
 				},
 				{
@@ -196,7 +196,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "V_SW[6]",
+					"name" : "V_SW[3]",
 					"strict" : false
 				},
 				{
@@ -205,6 +205,10 @@
 				},
 				{
 					"name" : "G_CLOCK_50",
+					"strict" : false
+				},
+				{
+					"name" : "V_BT[0]",
 					"strict" : false
 				}
 			]
