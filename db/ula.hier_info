@@ -28,6 +28,7 @@ G_CLOCK_50 => secondsCounted[22].CLK
 G_CLOCK_50 => secondsCounted[23].CLK
 G_CLOCK_50 => secondsCounted[24].CLK
 G_CLOCK_50 => secondsCounted[25].CLK
+G_CLOCK_50 => reset.CLK
 G_CLOCK_50 => start.CLK
 V_SW[0] => Mux28.IN19
 V_SW[0] => Mux29.IN19
@@ -220,7 +221,7 @@ G_LEDG[5] <= Mux37.DB_MAX_OUTPUT_PORT_TYPE
 G_LEDG[6] <= Mux36.DB_MAX_OUTPUT_PORT_TYPE
 G_LEDG[7] <= Mux35.DB_MAX_OUTPUT_PORT_TYPE
 V_BT[0] => Equal0.IN3
-V_BT[1] => ~NO_FANOUT~
+V_BT[1] => Equal1.IN3
 V_BT[2] => ~NO_FANOUT~
 V_BT[3] => ~NO_FANOUT~
 

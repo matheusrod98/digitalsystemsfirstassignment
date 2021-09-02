@@ -31,24 +31,43 @@ architecture ula_test of ula is
     
     -- 1 to start the counter and show the output and 0 to stop the counter and don't show the output.
     signal start:   std_logic := '0';
+    -- 1 to reset all values and stop the counter and 0 to do nothing.
+    signal reset:   std_logic := '0';
     
 begin
     
-    -- This will start the controller of the operations and light the 7-seg output display.
-    process (V_BT, G_CLOCK_50)
+    -- This is the controller of the start and reset functions.
+    process (V_BT)
         
-        variable delay: std_logic_vector (2 downto 0) := "111";
-            begin
-                -- I don't know why
+        variable resetDelay: std_logic_vector (2 downto 0) := "111";
+        variable startDelay: std_logic_vector (2 downto 0) := "111";
+   
+        begin
+         -- I don't know why, but I need to debounce this button even if it's not pressed.
                 if rising_edge (G_CLOCK_50) then
-                    delay (0) := V_BT (0);
-                    delay (1) := delay (0);
-                    delay (2) := delay (1);
+                    startDelay (0) := V_BT (0);
+                    startDelay (1) := startDelay (0);
+                    startDelay (2) := startDelay (1);
                     
-                    if delay = "000" then
+                    if startDelay = "000" then
                         start <= '1';
-                        delay := "111";
+                        reset <= '0';
+                        startDelay := "111";       
                     end if;
+
+                end if;
+                
+                if rising_edge (G_CLOCK_50) then
+                    resetDelay (0) := V_BT (1);
+                    resetDelay (1) := resetDelay (0);
+                    resetDelay (2) := resetDelay (1);
+                    
+                    if resetDelay = "000" then
+                        reset <= '1';
+                        start <= '0';
+                        resetDelay := "111";       
+                    end if;
+
                 end if;
         end process;
 
@@ -67,7 +86,6 @@ begin
             end loop;
             
             temp (10 downto 3) := s;
-            s <= "00000000";
             
             for i in 0 to 4 loop
                 if temp (11 downto 8) > 4 then
@@ -88,6 +106,13 @@ begin
             u := result (3 downto 0);
             
             -- Tables to convert units, tens and hundreds to 7-seg.
+            
+            if reset = '1' then
+                u := "0000";
+                t := "0000";
+                h := "0000";
+            end if;
+            
             case h is
                 when "0000" => G_HEX2 <= "1000000";
                 when "0001" => G_HEX2 <= "1111001";
@@ -144,6 +169,7 @@ begin
                 when "1110" => G_HEX0 <= "0000110";
                 when others => G_HEX0 <= "0001110";
             end case;
+
     end process;
 
     -- Counter that drives the control sytem. Change the running operation each 1 sec.
@@ -156,6 +182,8 @@ begin
             if rising_edge (G_CLOCK_50) then
                 if start = '1' then
                     secondsCounted := secondsCounted + 1;
+                else
+                    control <= "000";
                 end if;
                 
                 if (secondsCounted = 50000000 - 1) then
@@ -175,10 +203,11 @@ begin
         end process;
 
     -- Shows the inputs in the 7-seg displays.
-    process (V_SW)
+    process (V_SW, V_BT, G_CLOCK_50)
     
-        variable a: std_logic_vector (3 downto 0);
-        variable b: std_logic_vector (3 downto 0);
+        variable a:     std_logic_vector (3 downto 0);
+        variable b:     std_logic_vector (3 downto 0);
+        variable delay: std_logic_vector (2 downto 0) := "111";
             
         begin
             -- Splits the input in two parts.
@@ -191,6 +220,7 @@ begin
             end loop;
             
             -- Tables to show the inputs in the 7-seg displays.
+           
             case b is
                 when "0000" => G_HEX4 <= "1000000";
                 when "0001" => G_HEX4 <= "1111001";
@@ -209,7 +239,7 @@ begin
                 when "1110" => G_HEX4 <= "0000110";
                 when others => G_HEX4 <= "0001110";
             end case;
-            
+        
             case a is
                 when "0000" => G_HEX6 <= "1000000";
                 when "0001" => G_HEX6 <= "1111001";
@@ -228,6 +258,7 @@ begin
                 when "1110" => G_HEX6 <= "0000110";
                 when others => G_HEX6 <= "0001110";
             end case;
+
         end process;
  
     process (V_SW)
