@@ -285,6 +285,7 @@ begin
             -- Full adder.
 		    when "000" =>
                 G_LEDG <= "00000001";
+                s <= "00000000";
 			
 			    for i in 0 to 3 loop
                     if i = 0 then
@@ -306,6 +307,7 @@ begin
             -- Full subtractor.
 			when "001" =>
                 G_LEDG <= "00000010";
+                s <= "00000000";
 
 				for i in 0 to 3 loop							
                     if i = 0 then
@@ -327,6 +329,8 @@ begin
             -- Bitwise and.
 			when "010" =>
                 G_LEDG <= "00000100";
+                s <= "00000000";
+                
 				for i in 0 to 3 loop				
 					s (i) <= V_SW (i) and V_SW (i + 4);
 				end loop;
@@ -334,6 +338,8 @@ begin
             -- Bitwise or.
 			when "011" =>
                 G_LEDG <= "00001000";
+                s <= "00000000";
+                
 				for i in 0 to 3 loop				
 					s (i) <= V_SW (i) or V_SW (i + 4);
 				end loop;
@@ -341,6 +347,8 @@ begin
             -- Bitwise xor.
 			when "100" =>
                 G_LEDG <= "00010000";
+                s <= "00000000";
+                
 				for i in 0 to 3 loop				
 					s (i) <= V_SW (i) xor V_SW (i + 4);
 				end loop;
@@ -348,6 +356,8 @@ begin
             -- Bitwise not, applies only to the a vector.
 			when "101" => 
                 G_LEDG <= "00100000";
+                s <= "00000000";
+                
 				for i in 0 to 3 loop				
 				    s (i) <= not V_SW (i);
 				end loop;
@@ -355,6 +365,7 @@ begin
             -- Multiplier.
 			when "110" =>
                 G_LEDG <= "01000000";
+                s <= "00000000";
 
 				for j in 0 to 3 loop				
 					for i in 0 to 3 loop
@@ -431,6 +442,7 @@ begin
             -- One's increment. applies only to the the a vector.
 			when "111" =>
                 G_LEDG <= "10000000";
+                s <= "00000000";
                 
                 for i in 0 to 3 loop							
 				    if i = 0 then

@@ -3,87 +3,39 @@ Timing Analyzer Summary
 ------------------------------------------------------------
 
 Type  : Slow 1200mV 85C Model Setup 'G_CLOCK_50'
-Slack : -5.085
-TNS   : -95.020
-
-Type  : Slow 1200mV 85C Model Setup 'control[1]'
-Slack : -1.839
-TNS   : -1.839
+Slack : -4.289
+TNS   : -94.577
 
 Type  : Slow 1200mV 85C Model Hold 'G_CLOCK_50'
-Slack : 0.382
-TNS   : 0.000
-
-Type  : Slow 1200mV 85C Model Hold 'control[1]'
-Slack : 0.537
+Slack : 0.342
 TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Minimum Pulse Width 'G_CLOCK_50'
 Slack : -3.000
 TNS   : -34.000
 
-Type  : Slow 1200mV 85C Model Minimum Pulse Width 'control[0]'
-Slack : 0.386
-TNS   : 0.000
-
-Type  : Slow 1200mV 85C Model Minimum Pulse Width 'control[1]'
-Slack : 0.387
-TNS   : 0.000
-
 Type  : Slow 1200mV 0C Model Setup 'G_CLOCK_50'
-Slack : -4.484
-TNS   : -81.982
-
-Type  : Slow 1200mV 0C Model Setup 'control[1]'
-Slack : -1.607
-TNS   : -1.607
+Slack : -3.732
+TNS   : -81.300
 
 Type  : Slow 1200mV 0C Model Hold 'G_CLOCK_50'
-Slack : 0.333
-TNS   : 0.000
-
-Type  : Slow 1200mV 0C Model Hold 'control[1]'
-Slack : 0.494
+Slack : 0.298
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Minimum Pulse Width 'G_CLOCK_50'
 Slack : -3.000
 TNS   : -34.000
 
-Type  : Slow 1200mV 0C Model Minimum Pulse Width 'control[0]'
-Slack : 0.397
-TNS   : 0.000
-
-Type  : Slow 1200mV 0C Model Minimum Pulse Width 'control[1]'
-Slack : 0.422
-TNS   : 0.000
-
 Type  : Fast 1200mV 0C Model Setup 'G_CLOCK_50'
-Slack : -2.482
-TNS   : -41.250
-
-Type  : Fast 1200mV 0C Model Setup 'control[1]'
-Slack : -0.825
-TNS   : -0.825
+Slack : -1.970
+TNS   : -40.354
 
 Type  : Fast 1200mV 0C Model Hold 'G_CLOCK_50'
-Slack : 0.193
-TNS   : 0.000
-
-Type  : Fast 1200mV 0C Model Hold 'control[1]'
-Slack : 0.288
+Slack : 0.179
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'G_CLOCK_50'
 Slack : -3.000
-TNS   : -35.981
-
-Type  : Fast 1200mV 0C Model Minimum Pulse Width 'control[1]'
-Slack : 0.349
-TNS   : 0.000
-
-Type  : Fast 1200mV 0C Model Minimum Pulse Width 'control[0]'
-Slack : 0.398
-TNS   : 0.000
+TNS   : -36.136
 
 ------------------------------------------------------------
