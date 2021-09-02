@@ -140,6 +140,38 @@
 					"strict" : false
 				},
 				{
+					"name" : "G_HEX5[0]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX5[3]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX5[4]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX5[5]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX7[0]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX7[3]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX7[4]",
+					"strict" : false
+				},
+				{
+					"name" : "G_HEX7[5]",
+					"strict" : false
+				},
+				{
 					"name" : "G_LEDG[0]",
 					"strict" : false
 				},
