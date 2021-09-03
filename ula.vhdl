@@ -11,6 +11,7 @@ entity ula is
 		G_HEX0:     out std_logic_vector (6 downto 0);  --------------------------------------------------- 
         G_HEX1:     out std_logic_vector (6 downto 0);  -- Shows the outputs.
         G_HEX2:     out std_logic_vector (6 downto 0);  --------------------------------------------------
+        G_HEX3:     out std_logic_vector (6 downto 0);
         G_HEX4:     out std_logic_vector (6 downto 0);  -------------------------------------------------- 
         G_HEX6:     out std_logic_vector (6 downto 0);  -- Shows the inputs.
         G_HEX5:     out std_logic_vector (6 downto 0);  --------------------------------------------------
@@ -69,7 +70,6 @@ begin
                         start <= '0';
                         resetDelay := "111";       
                     end if;
-
                 end if;
         end process;
 
@@ -80,7 +80,8 @@ begin
         variable u:     std_logic_vector (3 downto 0) := "0000"; -- Units.
         variable t:     std_logic_vector (3 downto 0) := "0000"; -- Tens.   
         variable h:     std_logic_vector (3 downto 0) := "0000"; -- Hundreds.
-
+        
+        
         begin
             
             for i in 0 to 17 loop
@@ -222,7 +223,7 @@ begin
             end loop;
             
             -- Tables to show the inputs in the 7-seg displays.
-           
+            
             case b is
                 when "0000" => 
                     G_HEX4 <= "1000000";
@@ -327,7 +328,7 @@ begin
 
         end process;
  
-    process (V_SW)
+    process (V_SW, V_BT)
 
 	    variable carry: std_logic_vector (3 downto 0);
 	    variable c0:    std_logic_vector (3 downto 0);
@@ -341,7 +342,10 @@ begin
 	    variable w0:    std_logic_vector (4 downto 0);
 	    variable w1:    std_logic_vector (4 downto 0);
 	    variable w2:    std_logic_vector (4 downto 0);
-
+	    variable op1:    std_logic_vector (3 downto 0);
+        variable op2:    std_logic_vector (3 downto 0);
+        variable S_TEMP:    std_logic_vector (4 downto 0);
+        
         -- This one below it's only used for the one's increment.
         variable u:     std_logic_vector (3 downto 0) := "0001";
 	
@@ -356,41 +360,97 @@ begin
 			    for i in 0 to 3 loop
                     if i = 0 then
                         cin (0) := V_SW (i) and not V_SW (i);
-						s (i) <= V_SW (i) xor V_SW (i + 4) xor cin (0);
+						S (i) <= V_SW (i) xor V_SW (i + 4) xor cin (0);
 						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and cin (0)) or (V_SW (i + 4) and cin (0));
 
 					else 
-                        s (i) <= V_SW (i) xor V_SW (i + 4) xor carry (i - 1);
+                        S (i) <= V_SW (i) xor V_SW (i + 4) xor carry (i - 1);
 						carry (i) := (V_SW (i) and V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
-                            s (i + 1) <= carry (i);
+                            S (i + 1) <= carry (i);
                         end if;
 
                     end if;
+                
+                    
+                 G_HEX3 <= "1111111";    
                 end loop;
                 
             -- Full subtractor.
 			when "001" =>
                 G_LEDG <= "00000010";
                 s <= "00000000";
-
-				for i in 0 to 3 loop							
-                    if i = 0 then
+                op1 := (V_SW(3) & V_SW(2) & V_SW(1)& V_SW(0));
+                op2 := (V_SW(7) & V_SW(6) & V_SW(5)& V_SW(4));
+                
+				if op1>op2 then
+				for i in 0 to 3 loop
+			        if i = 0 then
                         cin (0) := V_SW (i) or not V_SW (i);
                         s (i) <= V_SW (i) xor not V_SW (i + 4) xor cin (0);
                         carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and cin (0)) or (not V_SW (i + 4) and cin (0));
-
+                        
                     else 
                         s (i) <= V_SW (i) xor not V_SW (i + 4) xor carry (i - 1);
                         carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (not V_SW (i + 4) and carry (i - 1));
 
                         if i = 3 then
                             s (i + 1) <= not carry (i);
-                        end if;
+                        end if;    
+                    
+                    END IF;
+                END LOOP;
+                elsif op1<op2 then
+                    		
+				    for i in 0 to 3 loop							
+                        if i = 0 then
+                            cin (0) := V_SW (i) or not V_SW (i);
+                            s_TEMP (i) := V_SW (i) xor not V_SW (i + 4) xor cin (0);
+                            carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and cin (0)) or (not V_SW (i + 4) and cin (0));
+                            
+                        else 
+                            s_TEMP (i) := V_SW (i) xor not V_SW (i + 4) xor carry (i - 1);
+                            carry (i) := (V_SW (i) and not V_SW (i + 4)) or (V_SW (i) and carry (i - 1)) or (not V_SW (i + 4) and carry (i - 1));
+    
+                            if i = 3 then
+                                S_TEMP (i + 1) := carry (i);
+                                op1 := (V_SW(3) & V_SW(2) & V_SW(1)& V_SW(0));
+                                op2 := (V_SW(7) & V_SW(6) & V_SW(5)& V_SW(4));
+                                if op2>op1 then
+                                    G_HEX3 <= "0111111";
+                                else
+                                    G_HEX3 <= "1111111";
+                                end if;    
+                            end if;
+                        END IF;
+                    END LOOP;
+				    for i in 0 to 3 loop				
+				        S_TEMP (i) := not S_TEMP(i);
+				    end loop;        
+                    for i in 0 to 3 loop							
+				        if i = 0 then
+					        cin (0) := V_SW (i) and not V_SW (i);
+						    s (i) <= S_TEMP(i) xor u (i) xor cin (0);
+						    carry (i) := (S_TEMP(i) and u (i)) or (S_TEMP(i) and cin (0)) or (u (i) and cin (0));
 
-                    end if;
-                end loop;
+				        else 
+    					    s (i) <= S_TEMP(i)  xor u (i) xor carry (i - 1);
+    						carry (i) := (S_TEMP(i) and u (i)) or (S_TEMP(i) and carry (i - 1)) or (u (i) and carry (i - 1));
+    
+                            if i = 3 then
+                                s (i + 1) <= carry (i);
+                            end if;
+    
+                        end if;
+                    end loop;    
+                
+                else
+                    for i in 0 to 3 loop				
+    				    s (i) <= V_SW (i) xor V_SW (i + 4);
+    			        G_HEX3 <= "1111111";  
+    			    end loop;
+    		    end if;		   
             
             -- Bitwise and.
 			when "010" =>
@@ -399,6 +459,7 @@ begin
                 
 				for i in 0 to 3 loop				
 					s (i) <= V_SW (i) and V_SW (i + 4);
+				G_HEX3 <= "1111111";  
 				end loop;
                 
             -- Bitwise or.
@@ -408,6 +469,7 @@ begin
                 
 				for i in 0 to 3 loop				
 					s (i) <= V_SW (i) or V_SW (i + 4);
+				G_HEX3 <= "1111111";  
 				end loop;
 
             -- Bitwise xor.
@@ -417,12 +479,14 @@ begin
                 
 				for i in 0 to 3 loop				
 					s (i) <= V_SW (i) xor V_SW (i + 4);
+				G_HEX3 <= "1111111";  
 				end loop;
                 
             -- Bitwise not, applies only to the a vector.
 			when "101" => 
                 G_LEDG <= "00100000";
                 s <= "00000000";
+                G_HEX3 <= "1111111";  
                 
 				for i in 0 to 3 loop				
 				    s (i) <= not V_SW (i);
@@ -432,6 +496,7 @@ begin
 			when "110" =>
                 G_LEDG <= "01000000";
                 s <= "00000000";
+                G_HEX3 <= "1111111";  
 
 				for j in 0 to 3 loop				
 					for i in 0 to 3 loop
@@ -507,6 +572,7 @@ begin
 
             -- One's increment. applies only to the the a vector.
 			when "111" =>
+			    G_HEX3 <= "1111111";  
                 G_LEDG <= "10000000";
                 s <= "00000000";
                 
